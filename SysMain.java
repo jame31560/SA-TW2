@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
 class DBmanager {
-	boolean verifyQRcode(QRcode a) {
-		String[] QRcodeIDList = { "123", "456", "789" };
+	String[] QRcodeIDList = { "123", "456", "789" };
 
+	boolean verifyQRcode(QRcode a) {
 		for(String each : QRcodeIDList) {
 			if (a.QRcodeID.equals(each)) {
 				return true;
