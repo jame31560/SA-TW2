@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class User {
-    private String id;
+    private String ID;
     private String password;
     private String name;
     private int blance;
@@ -9,13 +9,13 @@ public class User {
     private String QRCodeID;
     private boolean isAvailable;
 
-    User (String id, String password, String name, int blance, String phone) {
-        this.setId(id);
+    User (String ID, String password, String name, int blance, String phone) {
+        this.setID(ID);
         this.setPassword(password);
         this.setName(name);
         this.setBlance(blance);
         this.setPhone(phone);
-        this.setQRCodeID(id + phone);
+        this.setQRCodeID(ID + phone);
         this.setAvailable(true);
     }
 
@@ -53,8 +53,8 @@ public class User {
         this.blance += amount;
     }
 
-    public String getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
 
     public String getPassword() {
@@ -82,8 +82,8 @@ public class User {
     }
 
 
-    public void setId(String id) {
-        this.id = id;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public void setPassword(String password) {
@@ -103,7 +103,7 @@ public class User {
     }
 
     public void setQRCodeID(String qRCodeID) {
-        QRCodeID = qRCodeID;
+        this.QRCodeID = qRCodeID;
     }
 
     public void setAvailable(boolean isAvailable) {

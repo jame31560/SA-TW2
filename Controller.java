@@ -1,19 +1,39 @@
 import java.util.Scanner;
 
 public class Controller {
-    DBMgr dbMgr = new DBMgr();
+	DBMgr dbMgr = new DBMgr();
+	User user;
+	Scanner scanner = new Scanner(System.in);
+
+	public void login() {
+		System.out.println("\nUsername:");
+		String username = scanner.nextLine();
+		System.out.println("Password:");
+		String password = scanner.nextLine();
+
+		while(!dbMgr.verifyLogin(username, password)) {
+			System.out.println("\nWrong username or password, please login again.\n");
+			System.out.println("\nUsername:");
+			username = scanner.nextLine();
+			System.out.println("Password:");
+			password = scanner.nextLine();
+		}
+
+		
+		user = dbMgr.getUserByAccountID(username);
+		System.out.println("Login success.\nHello " + user.getName());
+	}
 
     public User requestPayer() {
 
         String QRCodeID;
-        Scanner scanner = new Scanner(System.in);
         while (true) {
 			System.out.println("\nFill in the QRcode ID:");
 			
 			QRCodeID = scanner.nextLine();
 			
 			if(dbMgr.verifyQRCode(QRCodeID)) {
-				return dbMgr.getUser(QRCodeID);
+				return dbMgr.getUserByQRCodeID(QRCodeID);
 			} else {
 				System.out.println("\nWrong QRcode ID.");
 			}
@@ -40,7 +60,15 @@ public class Controller {
 			System.out.println("\nTransaction fail.");
 		}
 
-		System.out.println("\nPayer's info:\npayer:" + payer.getId() + "\nblance: " + payer.getBlance());
-		System.out.println("\nPayee's info:\npayee:" + payee.getId() + "\nblance: " + payee.getBlance());
+		System.out.println("\nPayer's info:\npayer:" + payer.getID() + "\nblance: " + payer.getBlance());
+		System.out.println("\nPayee's info:\npayee:" + payee.getID() + "\nblance: " + payee.getBlance());
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public User getUser() {
+		return user;
 	}
 }
