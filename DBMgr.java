@@ -13,7 +13,7 @@ public class DBMgr {
         */
     }
 
-    protected void addUser(User ob) {
+    public void addUser(User ob) {
         UserList.add(ob);
     }
 
