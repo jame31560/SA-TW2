@@ -22,24 +22,24 @@ public class User {
 
     public int confirmAmount(int amount) {
         if (this.blance < amount) {
-            console.printf("\nPayer's balance is not enough.");
+            console.printf("\nPayer's balance is not enough.\n");
             return 1;
 
         } else {
             String confirm = "";
 
             while (true) {
-                confirm = console.readLine("\nPayer confirm the amount " + amount +" is that correct?[y/n]");
+                confirm = console.readLine("\nPayer confirm the amount " + amount +" is that correct?[y/n]\n>>> ");
                 confirm = confirm.toLowerCase();
 
                 if (confirm.equals("y")) {
-                    console.printf("Confirm success.");
+                    console.printf("\nConfirm success.\n");
                     return 0;
                 } else if (confirm.equals("n")) {
-                    console.printf("Confirm fail.");
+                    console.printf("\nConfirm fail.\n");
                     return 2;
                 } else {
-                    console.printf("Your input seems not 'y' or 'n'.");
+                    console.printf("\nYour input seems not 'y' or 'n'.\n");
                 }
             }    
         }

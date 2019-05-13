@@ -8,7 +8,7 @@ public class Controller {
 
 	public void login() {
 		String username = console.readLine("Username\n>>> ");
-		String password = String.valueOf(console.readPassword("Password\n>>>"));
+		String password = String.valueOf(console.readPassword("Password\n>>> "));
 		while(!dbMgr.verifyLogin(username, password)) {
 			console.printf("\nWrong username or password, please login again.\n");
 			username = console.readLine("Username\n>>> ");
@@ -20,7 +20,7 @@ public class Controller {
 
 	public void logout() {
 		user = null;
-		console.printf("Logout success.");
+		console.printf("\nLogout success.\n");
 	}
 
     public void scanQRCode() {
@@ -28,14 +28,14 @@ public class Controller {
 		boolean flg = true;
 
         while (flg) {
-			QRCodeID = console.readLine("\nFill in the QRcode ID\n>>> ");
+			QRCodeID = console.readLine("\nFill in the QRcode ID of the scanner result\n>>> ");
 			if(QRCodeID.equals(user.getQRCodeID())) {
-				console.printf("\nYou can not make transaction with yourself.\nPlease fill in again.");
+				console.printf("\nYou can not make transaction with yourself.\nPlease fill in again.\n");
 			} else if (dbMgr.verifyQRCode(QRCodeID)){
 				payer = dbMgr.getUserByQRCodeID(QRCodeID);
 				flg = false;
 			} else {
-				console.printf("\nWrong QRcode ID.\nPlease fill in again.");
+				console.printf("\nWrong QRcode ID.\nPlease fill in again.\n");
 			}
 		}
 	}
@@ -48,21 +48,21 @@ public class Controller {
 			try {
 				amount = Integer.valueOf(console.readLine("\nFill in the amount\n>>> "));
 				if (amount <= 0) {
-					console.printf("Please fill in a integer greater than 0.\n");
+					console.printf("\nPlease fill in a integer greater than 0.\n");
 				} else {
 					confirm = payer.confirmAmount(amount);
 				}
 			} catch (Exception e) {
-				console.printf("The input seems not a number.\nPlease fill in again.\n");
+				console.printf("\nThe input seems not a number.\nPlease fill in again.\n");
 			}
 		}
 
 		if (confirm == 0) {
 			payer.deductMoney(amount);
 			user.addMoney(amount);
-			console.printf("\nTransaction success.");
+			console.printf("\nTransaction success.\n");
 		} else {
-			console.printf("\nTransaction fail.");
+			console.printf("\nTransaction fail.\n");
 		}
 
 		console.printf("\nPayer's info:\npayer:" + payer.getID() + "\nblance: " + payer.getBlance() + "\n");
