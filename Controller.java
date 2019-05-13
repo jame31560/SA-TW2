@@ -6,22 +6,27 @@ public class Controller {
 	Scanner scanner = new Scanner(System.in);
 
 	public void login() {
-		System.out.println("\nUsername:");
+		System.out.print("\nUsername:");
 		String username = scanner.nextLine();
-		System.out.println("Password:");
+		System.out.print("Password:");
 		String password = scanner.nextLine();
 
 		while(!dbMgr.verifyLogin(username, password)) {
 			System.out.println("\nWrong username or password, please login again.\n");
-			System.out.println("\nUsername:");
+			System.out.print("Username:");
 			username = scanner.nextLine();
-			System.out.println("Password:");
+			System.out.print("Password:");
 			password = scanner.nextLine();
 		}
 
 		
 		user = dbMgr.getUserByAccountID(username);
 		System.out.println("Login success.\nHello " + user.getName());
+	}
+
+	public void logout() {
+		user = null;
+		System.out.println("Login success.");
 	}
 
     public User requestPayer() {
@@ -42,7 +47,6 @@ public class Controller {
 	
 	public void makeTransaction(User payee, User payer) {
 		System.out.println("\nFill in the amount:");
-		Scanner scanner = new Scanner(System.in);
 		int amount = scanner.nextInt();
 		int confirm = payer.confirmAmount(amount);
 
