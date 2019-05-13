@@ -1,6 +1,7 @@
-import java.util.Scanner;
+import java.io.Console;
 
 public class User {
+    Console console = System.console();
     private String ID;
     private String password;
     private String name;
@@ -21,25 +22,24 @@ public class User {
 
     public int confirmAmount(int amount) {
         if (this.blance < amount) {
-            System.out.println("\nPayer's balance is not enough.");
+            console.printf("\nPayer's balance is not enough.");
             return 1;
 
         } else {
-            Scanner scanner = new Scanner(System.in);
             String confirm = "";
 
             while (true) {
-                System.out.println("\nPayer confirm the amount " + amount +" is that correct?[y/n]");
-                confirm = scanner.nextLine().toLowerCase();
+                confirm = console.readLine("\nPayer confirm the amount " + amount +" is that correct?[y/n]");
+                confirm = confirm.toLowerCase();
 
                 if (confirm.equals("y")) {
-                    System.out.println("Confirm success.");
+                    console.printf("Confirm success.");
                     return 0;
                 } else if (confirm.equals("n")) {
-                    System.out.println("Confirm fail.");
+                    console.printf("Confirm fail.");
                     return 2;
                 } else {
-                    System.out.println("Your input seems not 'y' or 'n'.");
+                    console.printf("Your input seems not 'y' or 'n'.");
                 }
             }    
         }

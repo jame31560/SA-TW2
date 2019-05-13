@@ -1,71 +1,72 @@
-import java.util.Scanner;
+import java.io.Console;
 
 public class Controller {
 	DBMgr dbMgr = new DBMgr();
 	User user;
-	Scanner scanner = new Scanner(System.in);
+	User payer;
+	Console console = System.console();
 
 	public void login() {
-		System.out.print("\nUsername:");
-		String username = scanner.nextLine();
-		System.out.print("Password:");
-		String password = scanner.nextLine();
-
+		String username = console.readLine("Username\n>>> ");
+		String password = String.valueOf(console.readPassword("Password\n>>>"));
 		while(!dbMgr.verifyLogin(username, password)) {
-			System.out.println("\nWrong username or password, please login again.\n");
-			System.out.print("Username:");
-			username = scanner.nextLine();
-			System.out.print("Password:");
-			password = scanner.nextLine();
+			console.printf("\nWrong username or password, please login again.\n");
+			username = console.readLine("Username\n>>> ");
+			password = String.valueOf(console.readPassword("Password\n>>>"));
 		}
-
-		
 		user = dbMgr.getUserByAccountID(username);
-		System.out.println("Login success.\nHello " + user.getName());
+		console.printf("\nLogin success.\nHello " + user.getName() + "\n");
 	}
 
 	public void logout() {
 		user = null;
-		System.out.println("Login success.");
+		console.printf("Logout success.");
 	}
 
-    public User requestPayer() {
+    public void scanQRCode() {
+		String QRCodeID;
+		boolean flg = true;
 
-        String QRCodeID;
-        while (true) {
-			System.out.println("\nFill in the QRcode ID:");
-			
-			QRCodeID = scanner.nextLine();
-			
-			if(dbMgr.verifyQRCode(QRCodeID)) {
-				return dbMgr.getUserByQRCodeID(QRCodeID);
+        while (flg) {
+			QRCodeID = console.readLine("\nFill in the QRcode ID\n>>> ");
+			if(QRCodeID.equals(user.getQRCodeID())) {
+				console.printf("\nYou can not make transaction with yourself.\nPlease fill in again.");
+			} else if (dbMgr.verifyQRCode(QRCodeID)){
+				payer = dbMgr.getUserByQRCodeID(QRCodeID);
+				flg = false;
 			} else {
-				System.out.println("\nWrong QRcode ID.");
+				console.printf("\nWrong QRcode ID.\nPlease fill in again.");
 			}
 		}
 	}
 	
-	public void makeTransaction(User payee, User payer) {
-		System.out.println("\nFill in the amount:");
-		int amount = scanner.nextInt();
-		int confirm = payer.confirmAmount(amount);
+	public void makeTransaction() {
+		int amount = 0;
+		int confirm = -1;
 
-		while (confirm == 2) {
-			System.out.println("\nFill in the amount:");
-			amount = scanner.nextInt();
-			confirm = payer.confirmAmount(amount);
+		while (confirm == 2 || confirm == -1) {
+			try {
+				amount = Integer.valueOf(console.readLine("\nFill in the amount\n>>> "));
+				if (amount <= 0) {
+					console.printf("Please fill in a integer greater than 0.\n");
+				} else {
+					confirm = payer.confirmAmount(amount);
+				}
+			} catch (Exception e) {
+				console.printf("The input seems not a number.\nPlease fill in again.\n");
+			}
 		}
 
 		if (confirm == 0) {
 			payer.deductMoney(amount);
-			payee.addMoney(amount);
-			System.out.println("\nTransaction success.");
+			user.addMoney(amount);
+			console.printf("\nTransaction success.");
 		} else {
-			System.out.println("\nTransaction fail.");
+			console.printf("\nTransaction fail.");
 		}
 
-		System.out.println("\nPayer's info:\npayer:" + payer.getID() + "\nblance: " + payer.getBlance());
-		System.out.println("\nPayee's info:\npayee:" + payee.getID() + "\nblance: " + payee.getBlance());
+		console.printf("\nPayer's info:\npayer:" + payer.getID() + "\nblance: " + payer.getBlance() + "\n");
+		console.printf("\nPayee's info:\npayee:" + user.getID() + "\nblance: " + user.getBlance() + "\n");
 	}
 
 	public void setUser(User user) {
