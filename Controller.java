@@ -38,10 +38,10 @@ public class Controller {
         if (username.equals("") || 
                 dbMgr.getUserByUsername(username) != null) {
             return new String[] {"Fail",
-                "There has the same username in system"};
+                "There has the same username in the system"};
         } else if (!password.equals(confirmPassword)) {
             return new String[] {"Fail",
-                "Password confirm is not same."};
+                "Password confirm incorrect."};
         }
         User registUser = new User(username,
             password,
@@ -49,8 +49,22 @@ public class Controller {
             balance,
             phone);
         dbMgr.addUser(registUser);
-        return new String[] {"Success"}; 
+        return new String[] {"Success"};
+    }
 
+    public String[] changePassword(String password,
+            String newPassword,
+            String confirmPassword) {
+        if (password.equals(user.getPassword())) {
+            if (newPassword.equals(confirmPassword)) {
+                user.setPassword(password);
+                user = dbMgr.getUserByUsername(user.getID());
+                return new String[] {"Success"};
+            } else {
+                return new String[] {"Fail", "Password confirm incorrect."};
+            }
+        }
+        return new String[] {"Fail", "Password incorrect."};
     }
     
     public User getPayer(String QRCodeID) {

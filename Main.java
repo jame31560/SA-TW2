@@ -5,11 +5,9 @@ public class Main {
 	static Controller c = new Controller();
 	public static void main(String[] args) {
 		String command;
-
 		console.printf("Hello, wellcome to use paymet system.\n");	
 		console.printf("\nPlease select what do you want to do.\n");
 		command = console.readLine("1) Login\n2) Regist\n3) Quit\n>>> ");
-
 		while (!command.equals("3")) {
 			switch(command) { 
 				case "1": 
@@ -57,8 +55,8 @@ public class Main {
 						"\nPlease select what do you want to do.\n");
 					break;
 				case "3":
-					console.printf("\nChange Info\n"); 
-
+					console.printf("\nChange Password\n"); 
+					changePassword();
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
@@ -155,6 +153,27 @@ public class Main {
         console.printf("Balance: NT$ %,d\n", c.getUserBalance());
 	}
 
+	public static void changePassword() {
+		String password;
+		String newPassword;
+		String confirmPassword;
+		String[] result = {""};
+		while (result[0].equals("") || result[0].equals("Fail")) {
+			if (!result[0].equals("")) {
+				console.printf("\nPassword Change Fail\n");
+				console.printf("%s\n", result[1]);	
+			}
+			password = String.valueOf(
+				console.readPassword("Recent password >>> "));
+			newPassword = String.valueOf(
+				console.readPassword("New password >>> "));
+			confirmPassword = String.valueOf(
+				console.readPassword("Confirm password >>> "));
+			result = c.changePassword(password, newPassword, confirmPassword);
+		}
+		console.printf("\nPassword Change Success\n");
+	}
+
 	public static void regist() {
 		String username;
 		String password;
@@ -163,10 +182,10 @@ public class Main {
 		String phone;
 		String[] result = {""};
 		
-		while (result[0].equals("") || !result[0].equals("Success")) {
+		while (result[0].equals("") || result[0].equals("Fail")) {
 			if (!result[0].equals("")) {
 				console.printf("\nRegist Fail\n");
-				console.printf("%s", result[1]);	
+				console.printf("%s\n", result[1]);	
 			}
 			username = console.readLine("Username >>> ");
 			password = String.valueOf(console.readPassword("Password >>> "));
@@ -174,15 +193,13 @@ public class Main {
 				console.readPassword("Confirm Password >>> "));
 			name = console.readLine("Name >>> ");
 			phone = console.readLine("Phone >>> ");
-			result = c.regist(
-				username,
+			result = c.regist(username,
 				password,
 				confirmPassword,
 				name,
 				phone,
 				0);
 		}
-
 		console.printf("\nRegist Success\n");
 	}
 }
