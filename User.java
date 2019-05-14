@@ -5,27 +5,31 @@ public class User {
     private String ID;
     private String password;
     private String name;
-    private int blance;
+    private int balance;
     private String phone;
     private String QRCodeID;
     private boolean isAvailable;
 
-    User (String ID, String password, String name, int blance, String phone) {
+    User (String ID,
+            String password,
+            String name,
+            int balance,
+            String phone) {
         this.setID(ID);
         this.setPassword(password);
         this.setName(name);
-        this.setBlance(blance);
+        this.setBalance(balance);
         this.setPhone(phone);
         this.setQRCodeID(ID + phone);
         this.setAvailable(true);
     }
 
     public void deductMoney(int amount) {
-        this.blance -= amount;
+        this.balance -= amount;
     }
 
     public void addMoney(int amount) {
-        this.blance += amount;
+        this.balance += amount;
     }
 
     public String getID() {
@@ -40,8 +44,8 @@ public class User {
         return name;
     }
 
-    public int getBlance() {
-        return blance;
+    public int getBalance() {
+        return balance;
     }
 
     public String getQRCodeID() {
@@ -69,8 +73,8 @@ public class User {
         this.name = name;
     }
 
-    public void setBlance(int blance) {
-        this.blance = blance;
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 
     public void setPhone(String phone) {

@@ -27,13 +27,38 @@ public class Controller {
         }
         return true;
     }
+
+    public String[] regist(String username,
+            String password,
+            String confirmPassword,
+            String name,
+            String phone,
+            int balance) {
+        
+        if (username.equals("") || 
+                dbMgr.getUserByUsername(username) != null) {
+            return new String[] {"Fail",
+                "There has the same username in system"};
+        } else if (!password.equals(confirmPassword)) {
+            return new String[] {"Fail",
+                "Password confirm is not same."};
+        }
+        User registUser = new User(username,
+            password,
+            name,
+            balance,
+            phone);
+        dbMgr.addUser(registUser);
+        return new String[] {"Success"}; 
+
+    }
     
     public User getPayer(String QRCodeID) {
         return dbMgr.getUserByQRCodeID(QRCodeID);
     }
     
     public String[] makeTransaction(User payer, int amount) {
-        if (amount > payer.getBlance()) {
+        if (amount > payer.getBalance()) {
             return new String[] { "Fail", "Payer's balance is not enough." };
         } else {
             int result = JOptionPane.showConfirmDialog(null,
@@ -65,8 +90,8 @@ public class Controller {
         return user.getName();
     }
 
-    public int getUserBlance() {
-        return user.getBlance();
+    public int getUserBalance() {
+        return user.getBalance();
     }
 
     public String getUserQRCodeID() {

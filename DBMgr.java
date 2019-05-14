@@ -17,15 +17,6 @@ public class DBMgr {
         UserList.add(ob);
     }
 
-    public boolean verifyQRCode(String QRCodeID) {
-        for (User user : UserList) {
-            if (QRCodeID.equals(user.getQRCodeID())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public User getUserByQRCodeID(String QRCodeID) {
         for (User user : UserList) {
             if (QRCodeID.equals(user.getQRCodeID())) {
