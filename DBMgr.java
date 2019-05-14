@@ -36,9 +36,11 @@ public class DBMgr {
     }
 
     public void setUserPassword(String username, String password) {
-        for (User user : UserList) {
+        for (int i = 0; i < UserList.size(); i++) {
+            User user = UserList.get(i);
             if (username.equals(user.getID())) {
                 user.setPassword(password);
+                UserList.set(i, user);
             }
         }
     }
