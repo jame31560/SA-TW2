@@ -12,7 +12,7 @@ public class Controller {
 		while(!dbMgr.verifyLogin(username, password)) {
 			console.printf("\nWrong username or password, please login again.\n");
 			username = console.readLine("Username\n>>> ");
-			password = String.valueOf(console.readPassword("Password\n>>>"));
+			password = String.valueOf(console.readPassword("Password\n>>> "));
 		}
 		user = dbMgr.getUserByAccountID(username);
 		console.printf("\nLogin success.\nHello " + user.getName() + "\n");
@@ -68,6 +68,14 @@ public class Controller {
 		console.printf("\nPayer's info:\npayer:" + payer.getID() + "\nblance: " + payer.getBlance() + "\n");
 		console.printf("\nPayee's info:\npayee:" + user.getID() + "\nblance: " + user.getBlance() + "\n");
 	}
+
+	public void showInfo() {
+		console.printf("Name: %s\n", user.getName());
+		console.printf("Username: %s\n", user.getID());
+		console.printf("Phone: %s\n", user.getPhone());
+		console.printf("Blance: NT$ %,d\n", user.getBlance());
+	}
+
 
 	public void setUser(User user) {
 		this.user = user;

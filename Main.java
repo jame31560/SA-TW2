@@ -24,12 +24,11 @@ public class Main {
 								console.printf("\nMake Transaction\n");
 								c.scanQRCode();
 								c.makeTransaction();
-
 								System.out.print("\nPlease select what do you want to do.\n");
 								break;
 							case "2":
 								console.printf("\nShow Info\n"); 
-
+								c.showInfo();
 								System.out.print("\nPlease select what do you want to do.\n");
 								break;
 							case "3":
