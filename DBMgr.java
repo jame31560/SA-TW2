@@ -17,15 +17,6 @@ public class DBMgr {
         UserList.add(ob);
     }
 
-    public boolean verifyLogin(String username, String password) {
-        for (User user : UserList) {
-            if (username.equals(user.getID()) && password.equals(user.getPassword())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean verifyQRCode(String QRCodeID) {
         for (User user : UserList) {
             if (QRCodeID.equals(user.getQRCodeID())) {
@@ -44,7 +35,7 @@ public class DBMgr {
         return null;
     }
 
-    public User getUserByAccountID(String username) {
+    public User getUserByUsername(String username) {
         for (User user : UserList) {
             if (username.equals(user.getID())) {
                 return user;

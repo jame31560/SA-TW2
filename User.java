@@ -20,31 +20,6 @@ public class User {
         this.setAvailable(true);
     }
 
-    public int confirmAmount(int amount) {
-        if (this.blance < amount) {
-            console.printf("\nPayer's balance is not enough.\n");
-            return 1;
-
-        } else {
-            String confirm = "";
-
-            while (true) {
-                confirm = console.readLine("\nPayer confirm the amount " + amount +" is that correct?[y/n]\n>>> ");
-                confirm = confirm.toLowerCase();
-
-                if (confirm.equals("y")) {
-                    console.printf("\nConfirm success.\n");
-                    return 0;
-                } else if (confirm.equals("n")) {
-                    console.printf("\nConfirm fail.\n");
-                    return 2;
-                } else {
-                    console.printf("\nYour input seems not 'y' or 'n'.\n");
-                }
-            }    
-        }
-    }
-
     public void deductMoney(int amount) {
         this.blance -= amount;
     }

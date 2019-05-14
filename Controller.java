@@ -1,87 +1,79 @@
 import java.io.Console;
+import javax.swing.JOptionPane;
 
 public class Controller {
-	DBMgr dbMgr = new DBMgr();
-	User user;
-	User payer;
-	Console console = System.console();
+    DBMgr dbMgr = new DBMgr();
+    User user;
+    Console console = System.console();
+    
+    public boolean login(String username, String password) {
+        user = dbMgr.getUserByUsername(username);
+        if (user == null) {
+            return false;
+        } else {
+            if (password.equals(user.getPassword())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
-	public void login() {
-		String username = console.readLine("Username\n>>> ");
-		String password = String.valueOf(console.readPassword("Password\n>>> "));
-		while(!dbMgr.verifyLogin(username, password)) {
-			console.printf("\nWrong username or password, please login again.\n");
-			username = console.readLine("Username\n>>> ");
-			password = String.valueOf(console.readPassword("Password\n>>> "));
-		}
-		user = dbMgr.getUserByAccountID(username);
-		console.printf("\nLogin success.\nHello " + user.getName() + "\n");
-	}
+    public boolean logout() {
+        try {
+            user = null;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    
+    public User getPayer(String QRCodeID) {
+        return dbMgr.getUserByQRCodeID(QRCodeID);
+    }
+    
+    public String[] makeTransaction(User payer, int amount) {
+        if (amount > payer.getBlance()) {
+            return new String[] { "Fail", "Payer's balance is not enough." };
+        } else {
+            int result = JOptionPane.showConfirmDialog(null,
+               "Is the amount right?",
+               "Confirm",
+               JOptionPane.YES_NO_OPTION,
+               JOptionPane.QUESTION_MESSAGE);
+            
+            if (result == JOptionPane.YES_OPTION) {
+                payer.deductMoney(amount);
+                user.addMoney(amount);
+                return new String[] { "Success" };
+            } else {
+                return new String[] { "Fail", "Payer reject the amount." };
+            }
+        }
+    }
+    
 
-	public void logout() {
-		user = null;
-		console.printf("\nLogout success.\n");
-	}
+    public String getUserID() {
+        return user.getID();
+    }
 
-    public void scanQRCode() {
-		String QRCodeID;
-		boolean flg = true;
+    public String getUserPassword() {
+        return user.getPassword();
+    }
 
-        while (flg) {
-			QRCodeID = console.readLine("\nFill in the QRcode ID of the scanner result\n>>> ");
-			if(QRCodeID.equals(user.getQRCodeID())) {
-				console.printf("\nYou can not make transaction with yourself.\nPlease fill in again.\n");
-			} else if (dbMgr.verifyQRCode(QRCodeID)){
-				payer = dbMgr.getUserByQRCodeID(QRCodeID);
-				flg = false;
-			} else {
-				console.printf("\nWrong QRcode ID.\nPlease fill in again.\n");
-			}
-		}
-	}
-	
-	public void makeTransaction() {
-		int amount = 0;
-		int confirm = -1;
+    public String getUserName() {
+        return user.getName();
+    }
 
-		while (confirm == 2 || confirm == -1) {
-			try {
-				amount = Integer.valueOf(console.readLine("\nFill in the amount\n>>> "));
-				if (amount <= 0) {
-					console.printf("\nPlease fill in a integer greater than 0.\n");
-				} else {
-					confirm = payer.confirmAmount(amount);
-				}
-			} catch (Exception e) {
-				console.printf("\nThe input seems not a number.\nPlease fill in again.\n");
-			}
-		}
+    public int getUserBlance() {
+        return user.getBlance();
+    }
 
-		if (confirm == 0) {
-			payer.deductMoney(amount);
-			user.addMoney(amount);
-			console.printf("\nTransaction success.\n");
-		} else {
-			console.printf("\nTransaction fail.\n");
-		}
+    public String getUserQRCodeID() {
+        return user.getQRCodeID();
+    }
 
-		console.printf("\nPayer's info:\npayer:" + payer.getID() + "\nblance: " + payer.getBlance() + "\n");
-		console.printf("\nPayee's info:\npayee:" + user.getID() + "\nblance: " + user.getBlance() + "\n");
-	}
-
-	public void showInfo() {
-		console.printf("Name: %s\n", user.getName());
-		console.printf("Username: %s\n", user.getID());
-		console.printf("Phone: %s\n", user.getPhone());
-		console.printf("Blance: NT$ %,d\n", user.getBlance());
-	}
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public User getUser() {
-		return user;
-	}
+    public String getUserPhone() {
+        return user.getPhone();
+    }
 }
