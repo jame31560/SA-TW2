@@ -37,7 +37,7 @@ public class Main {
 		console.printf("\nPlease select what do you want to do.\n");
 		command = console.readLine("1) Make Transaction\n"
 			+ "2) Show Info\n"
-			+ "3) Change Info\n"
+			+ "3) Change Password\n"
 			+ "4) Logout\n"
 			+ ">>> ");
 		while (!command.equals("4")) {
@@ -66,7 +66,7 @@ public class Main {
 			}
 			command = console.readLine("1) Make Transaction\n"
 				+ "2) Show Info\n"
-				+ "3) Change Info\n"
+				+ "3) Change Password\n"
 				+ "4) Logout\n>>> ");
 		}
 	}

@@ -57,8 +57,7 @@ public class Controller {
             String confirmPassword) {
         if (password.equals(user.getPassword())) {
             if (newPassword.equals(confirmPassword)) {
-                dbMgr.setUserPassword(user.getID(), newPassword);
-                user = dbMgr.getUserByUsername(user.getID());
+                user.setPassword(newPassword);
                 return new String[] {"Success"};
             } else {
                 return new String[] {"Fail", "Password confirm incorrect."};
