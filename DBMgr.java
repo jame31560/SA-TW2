@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class DBMgr {
-    List<User> UserList = new ArrayList<User>();
+    static List<User> UserList = new ArrayList<User>();
 
     DBMgr () {
         this.addUser(new User("B10623020", "1234", "Amy1", 1000, "09123456781"));
