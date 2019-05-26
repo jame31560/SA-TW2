@@ -96,7 +96,7 @@ public class Main {
 
 	public static void makeTransaction() {
 		String QRCodeID;
-		User payer = null;
+		String payerID = null;
 		boolean flg = true;
 		boolean confirm = true;
 		int amount = -1;
@@ -110,7 +110,7 @@ public class Main {
 					"\nYou can not make transaction with yourself.\n");
 				console.printf("Please fill in again.\n");
             } else if (c.getPayer(QRCodeID) != null){
-				payer = c.getPayer(QRCodeID);
+				payerID = c.getPayer(QRCodeID);
                 flg = false;
             } else {
 				console.printf("\nWrong QRcode ID.\n");
@@ -134,7 +134,7 @@ public class Main {
 			}
 		}
 
-		result = c.makeTransaction(payer, amount);
+		result = c.makeTransaction(payerID, amount);
 
 		if (result[0].equals("Fail")) {
 			console.printf("\nTransaction fail.\n");
