@@ -12,7 +12,6 @@ public class DBMgr {
     DBMgr () {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("connect success to MySQLToJava");
             conn = DriverManager.getConnection("jdbc:mysql://"
                 + "127.0.0.1:5000/java?"
                 + "user=root&"

@@ -16,3 +16,15 @@ cd ./bin
 ```
 java Main
 ```
+
+## Set up database
+
+Pelease set up phpmyadmin and import the sample data in sql folder.
+And please fill the setting in DBMgr.java Line 16.
+```
+conn = DriverManager.getConnection("jdbc:mysql://"
+    + "{phpmyadmin server ip}:{port}/{database name}?"
+    + "user={username}&"
+    + "password={password}&"
+    + "useUnicode=true");
+```
