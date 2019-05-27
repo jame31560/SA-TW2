@@ -19,8 +19,15 @@ java Main
 
 ## Set up database
 
-Pelease set up phpmyadmin and import the sample data in sql folder.
-And please fill the setting in DBMgr.java Line 16.
+Pelease set up phpmyadmin and import the sample data which in sql folder.  
+Then fill the following settings in DBMgr.java Line 16.  
+* phpmyadmin server ip
+* port
+* database name
+* username of phpmyadmin
+* password of phpmyadmin
+
+The filling format like following.
 ```
 conn = DriverManager.getConnection("jdbc:mysql://"
     + "{phpmyadmin server ip}:{port}/{database name}?"
