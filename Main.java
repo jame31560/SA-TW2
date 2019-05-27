@@ -38,9 +38,10 @@ public class Main {
 		command = console.readLine("1) Make Transaction\n"
 			+ "2) Show Info\n"
 			+ "3) Change Password\n"
-			+ "4) Logout\n"
+			+ "4) Show QRCode\n"
+			+ "5) Logout\n"
 			+ ">>> ");
-		while (!command.equals("4")) {
+		while (!command.equals("5")) {
 			switch(command) {
 				case "1":
 					console.printf("\nMake Transaction\n");
@@ -60,6 +61,12 @@ public class Main {
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
+				case "4":
+					console.printf("\nShow QRCode\n"); 
+					console.printf("QRCodeID: %s\n", c.getUserQRCodeID());
+					console.printf(
+						"\nPlease select what do you want to do.\n");
+					break;
 				default:
 					console.printf("\nYour input is not any option.\n");
 					console.printf("Please select again.\n");
@@ -67,7 +74,8 @@ public class Main {
 			command = console.readLine("1) Make Transaction\n"
 				+ "2) Show Info\n"
 				+ "3) Change Password\n"
-				+ "4) Logout\n>>> ");
+				+ "4) Show QRCode\n"
+				+ "5) Logout\n>>> ");
 		}
 	}
 
