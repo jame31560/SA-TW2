@@ -1,37 +1,195 @@
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DBMgr {
-    static List<User> UserList = new ArrayList<User>();
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;//rule 2
 
     DBMgr () {
-        this.addUser(new User("B10623020", "1234", "Amy1", 1000, "09123456781"));
-        this.addUser(new User("B10623021", "1234", "Amy2", 1000, "09123456782"));
-        this.addUser(new User("B10623022", "1234", "Amy3", 1000, "09123456783"));
-        /*
-        The DBMgr need to add the User from database when it init,
-        But we don't have database now, so I write the test data in here.
-        */
-    }
-
-    public void addUser(User ob) {
-        UserList.add(ob);
-    }
-
-    public User getUserByQRCodeID(String QRCodeID) {
-        for (User user : UserList) {
-            if (QRCodeID.equals(user.getQRCodeID())) {
-                return user;
-            }
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://"
+                + "127.0.0.1:5000/java?"
+                + "user=root&"
+                + "password=root&"
+                + "useUnicode=true");
+            System.out.println("connect success to MySQL");
+            stmt = conn.createStatement();
+        } catch(SQLException excpt) {
+            excpt.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return null;
     }
 
-    public User getUserByUsername(String username) {
-        for (User user : UserList) {
-            if (username.equals(user.getID())) {
-                return user;
-            }
+    public void addUser(String username,
+            String password,
+            String name,
+            String phone) {
+        try {
+            stmt.executeUpdate("INSERT INTO `userinfo` ("
+                + "`u_name`, `u_username`, `u_password`, "
+                + "`u_phone`, `u_QRcodeID`) VALUES ('"
+                + name + "', '"
+                + username + "', '"
+                + password + "', '"
+                + phone + "', '"
+                + username + phone + "');");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+    }
+
+    public String getUsernameByQRCodeID(String QRCodeID) {
+        try {
+            rs = stmt.executeQuery("SELECT u_username "
+                + "FROM userinfo WHERE u_QRcodeID = '"
+                + QRCodeID
+                + "';");
+            if(rs.next()){
+                return rs.getString("u_username");//rule 2
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public boolean verifyUsername(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT u_username "
+                + "FROM userinfo WHERE u_username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void setUserPassword(String username, String password) {
+        try {
+            stmt.executeUpdate("UPDATE `userinfo` SET `u_password` = '"
+                + password + "' "
+                + "WHERE `userinfo`.`u_username` = '"
+                + username + "';");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getUserPassword(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT u_password "
+                + "FROM userinfo WHERE u_username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return rs.getString("u_password");//rule 2
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getUserName(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT u_name "
+                + "FROM userinfo WHERE u_username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return rs.getString("u_name");//rule 2
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getUserPhone(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT u_phone "
+                + "FROM userinfo WHERE u_username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return rs.getString("u_phone");//rule 2
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getUserQRCodeID(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT u_QRcodeID "
+                + "FROM userinfo WHERE u_username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return rs.getString("u_QRcodeID");//rule 2
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int getUserBalance(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT u_balance "
+                + "FROM userinfo WHERE u_username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return rs.getInt("u_balance");//rule 2
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public void setUserBalance(String username, int balance) {
+        try {
+            stmt.executeUpdate("UPDATE `userinfo` SET `u_balance` = '"
+                + balance + "' "
+                + "WHERE `userinfo`.`u_username` = '"
+                + username + "';");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void deductUserMoney(String username, int amount) {
+        int balance = this.getUserBalance(username);
+        balance -= amount;
+        this.setUserBalance(username, balance);
+    }
+
+    public void addUserMoney(String username, int amount) {
+        int balance = this.getUserBalance(username);
+        balance += amount;
+        this.setUserBalance(username, balance);
     }
 }

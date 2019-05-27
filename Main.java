@@ -2,8 +2,7 @@ import java.io.Console;
 
 public class Main {
 	static Console console = System.console();
-	static Controller c = new Controller();
-	static DBConnect dbc = new DBConnect();
+	static Controller c = new Controller();//rule 4
 	public static void main(String[] args) {
 		String command;
 		console.printf("Hello, wellcome to use paymet system.\n");	
@@ -26,7 +25,6 @@ public class Main {
 						"\nPlease select what do you want to do.\n");
 					break;
 				default: 
-					dbc.getData();
 					console.printf("\nYour input is not any option.\n");
 					console.printf("Please select again.\n");
 			}
@@ -77,7 +75,7 @@ public class Main {
 		String username = console.readLine("Username\n>>> ");
 		String password = String.valueOf(
 			console.readPassword("Password\n>>> "));
-		while(!c.login(username, password)) { //data coupling
+		while(!c.login(username, password)) {
             console.printf(
 				"\nWrong username or password, please login again.\n");
             username = console.readLine("Username\n>>> ");
@@ -98,7 +96,7 @@ public class Main {
 
 	public static void makeTransaction() {
 		String QRCodeID;
-		User payer = null;
+		String payerID = null;
 		boolean flg = true;
 		boolean confirm = true;
 		int amount = -1;
@@ -112,7 +110,7 @@ public class Main {
 					"\nYou can not make transaction with yourself.\n");
 				console.printf("Please fill in again.\n");
             } else if (c.getPayer(QRCodeID) != null){
-				payer = c.getPayer(QRCodeID);//rule 4
+				payerID = c.getPayer(QRCodeID);
                 flg = false;
             } else {
 				console.printf("\nWrong QRcode ID.\n");
@@ -136,7 +134,7 @@ public class Main {
 			}
 		}
 
-		result = c.makeTransaction(payer, amount);//data coupling
+		result = c.makeTransaction(payerID, amount);//rule 4
 
 		if (result[0].equals("Fail")) {
 			console.printf("\nTransaction fail.\n");
@@ -171,7 +169,7 @@ public class Main {
 				console.readPassword("New password >>> "));
 			confirmPassword = String.valueOf(
 				console.readPassword("Confirm password >>> "));
-			result = c.changePassword(password, newPassword, confirmPassword);//data coupling
+			result = c.changePassword(password, newPassword, confirmPassword);
 		}
 		console.printf("\nPassword Change Success\n");
 	}
@@ -200,7 +198,7 @@ public class Main {
 				confirmPassword,
 				name,
 				phone,
-				0);//data coupling
+				0);
 		}
 		console.printf("\nRegist Success\n");
 	}
