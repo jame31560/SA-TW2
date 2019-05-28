@@ -39,9 +39,10 @@ public class Main {
 			+ "2) Show Info\n"
 			+ "3) Change Password\n"
 			+ "4) Show QRCode\n"
-			+ "5) Logout\n"
+			+ "5) Show Transaction History\n"
+			+ "6) Logout\n"
 			+ ">>> ");
-		while (!command.equals("5")) {
+		while (!command.equals("6")) {
 			switch(command) {
 				case "1":
 					console.printf("\nMake Transaction\n");
@@ -67,6 +68,12 @@ public class Main {
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
+				case "5":
+					console.printf("\nShow Transaction History\n"); 
+					// String[] historyList = c.getUserHistory();
+					console.printf(
+						"\nPlease select what do you want to do.\n");
+					break;
 				default:
 					console.printf("\nYour input is not any option.\n");
 					console.printf("Please select again.\n");
@@ -75,7 +82,8 @@ public class Main {
 				+ "2) Show Info\n"
 				+ "3) Change Password\n"
 				+ "4) Show QRCode\n"
-				+ "5) Logout\n>>> ");
+				+ "5) Show Transaction History\n"
+				+ "6) Logout\n>>> ");
 		}
 	}
 

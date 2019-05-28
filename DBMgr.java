@@ -32,8 +32,8 @@ public class DBMgr {
             String phone) {
         try {
             stmt.executeUpdate("INSERT INTO `userinfo` ("
-                + "`u_name`, `u_username`, `u_password`, "
-                + "`u_phone`, `u_QRcodeID`) VALUES ('"
+                + "`name`, `username`, `password`, "
+                + "`phone`, `QRcodeID`) VALUES ('"
                 + name + "', '"
                 + username + "', '"
                 + password + "', '"
@@ -46,12 +46,12 @@ public class DBMgr {
 
     public String getUsernameByQRCodeID(String QRCodeID) {
         try {
-            rs = stmt.executeQuery("SELECT u_username "
-                + "FROM userinfo WHERE u_QRcodeID = '"
+            rs = stmt.executeQuery("SELECT username "
+                + "FROM userinfo WHERE QRcodeID = '"
                 + QRCodeID
                 + "';");
             if(rs.next()){
-                return rs.getString("u_username");
+                return rs.getString("username");
             }
             return null;
         } catch (Exception e) {
@@ -61,8 +61,8 @@ public class DBMgr {
 
     public boolean verifyUsername(String username) {
         try {
-            rs = stmt.executeQuery("SELECT u_username "
-                + "FROM userinfo WHERE u_username = '"
+            rs = stmt.executeQuery("SELECT username "
+                + "FROM userinfo WHERE username = '"
                 + username
                 + "';");
             if(rs.next()){
@@ -76,9 +76,9 @@ public class DBMgr {
 
     public void setUserPassword(String username, String password) {
         try {
-            stmt.executeUpdate("UPDATE `userinfo` SET `u_password` = '"
+            stmt.executeUpdate("UPDATE `userinfo` SET `password` = '"
                 + password + "' "
-                + "WHERE `userinfo`.`u_username` = '"
+                + "WHERE `userinfo`.`username` = '"
                 + username + "';");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,12 +87,12 @@ public class DBMgr {
 
     public String getUserPassword(String username) {
         try {
-            rs = stmt.executeQuery("SELECT u_password "
-                + "FROM userinfo WHERE u_username = '"
+            rs = stmt.executeQuery("SELECT password "
+                + "FROM userinfo WHERE username = '"
                 + username
                 + "';");
             if(rs.next()){
-                return rs.getString("u_password");
+                return rs.getString("password");
             } else {
                 return null;
             }
@@ -104,12 +104,12 @@ public class DBMgr {
 
     public String getUserName(String username) {
         try {
-            rs = stmt.executeQuery("SELECT u_name "
-                + "FROM userinfo WHERE u_username = '"
+            rs = stmt.executeQuery("SELECT name "
+                + "FROM userinfo WHERE username = '"
                 + username
                 + "';");
             if(rs.next()){
-                return rs.getString("u_name");
+                return rs.getString("name");
             } else {
                 return null;
             }
@@ -121,12 +121,12 @@ public class DBMgr {
 
     public String getUserPhone(String username) {
         try {
-            rs = stmt.executeQuery("SELECT u_phone "
-                + "FROM userinfo WHERE u_username = '"
+            rs = stmt.executeQuery("SELECT phone "
+                + "FROM userinfo WHERE username = '"
                 + username
                 + "';");
             if(rs.next()){
-                return rs.getString("u_phone");
+                return rs.getString("phone");
             } else {
                 return null;
             }
@@ -138,12 +138,12 @@ public class DBMgr {
 
     public String getUserQRCodeID(String username) {
         try {
-            rs = stmt.executeQuery("SELECT u_QRcodeID "
-                + "FROM userinfo WHERE u_username = '"
+            rs = stmt.executeQuery("SELECT QRcodeID "
+                + "FROM userinfo WHERE username = '"
                 + username
                 + "';");
             if(rs.next()){
-                return rs.getString("u_QRcodeID");
+                return rs.getString("QRcodeID");
             } else {
                 return null;
             }
@@ -155,12 +155,12 @@ public class DBMgr {
 
     public int getUserBalance(String username) {
         try {
-            rs = stmt.executeQuery("SELECT u_balance "
-                + "FROM userinfo WHERE u_username = '"
+            rs = stmt.executeQuery("SELECT balance "
+                + "FROM userinfo WHERE username = '"
                 + username
                 + "';");
             if(rs.next()){
-                return rs.getInt("u_balance");
+                return rs.getInt("balance");
             } else {
                 return 0;
             }
@@ -172,9 +172,9 @@ public class DBMgr {
 
     public void setUserBalance(String username, int balance) {
         try {
-            stmt.executeUpdate("UPDATE `userinfo` SET `u_balance` = '"
+            stmt.executeUpdate("UPDATE `userinfo` SET `balance` = '"
                 + balance + "' "
-                + "WHERE `userinfo`.`u_username` = '"
+                + "WHERE `userinfo`.`username` = '"
                 + username + "';");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -191,5 +191,45 @@ public class DBMgr {
         int balance = this.getUserBalance(username);
         balance += amount;
         this.setUserBalance(username, balance);
+    }
+
+    public void addTransaction(String payee,
+            String payer,
+            int amount,
+            int status,
+            String reason) {
+        try {
+            int transaction_id;
+            rs = stmt.executeQuery("SELECT auto_increment "
+                + "FROM information_schema.tables "
+                + "WHERE table_schema='java' "
+                + "AND table_name='transaction_list';");
+            rs.next();
+            transaction_id = rs.getInt("auto_increment");
+            String sql = ("INSERT INTO `transaction_list` "
+                + "(`id`, `amount`, `status`, `reason`) VALUES ("
+                + transaction_id + ", "
+                + amount + ", "
+                + status + ", ");
+            if (status == 0) {
+            // 0 means success, 1 means fail.
+                sql += "NULL);";
+            } else {
+                sql += "'" + reason + "');";
+            }
+            stmt.executeUpdate(sql);
+            sql = ("INSERT INTO `transaction_detail` "
+                + "(`transaction_id`, `username`, `role`) VALUES ("
+                + transaction_id + ", '"
+                + payee + "', "
+                + "0), ("
+                + transaction_id + ", '"
+                + payer + "', "
+                + "1);");
+            stmt.executeUpdate(sql);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 }
