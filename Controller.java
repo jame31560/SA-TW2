@@ -6,16 +6,17 @@ import javax.swing.JOptionPane;
 
 public class Controller {
     DBMgr dbMgr = new DBMgr();
-    private String userID = null;
+    private String username = null;
     Console console = System.console();
 
-    public void setUserID(String username) {
-        this.userID = username;
+    public void setUsingUsername(String username) {
+        this.username = username;
     }
+
     public boolean login(String username, String password) {
         if (dbMgr.verifyUsername(username)) {
             if (eccrypt(password).equals(dbMgr.getUserPassword(username))) {
-                this.userID = username;
+                this.setUsingUsername(username);
                 return true;
             } else {
                 return false;
@@ -27,17 +28,25 @@ public class Controller {
 
     public boolean logout() {
         try {
-            userID = null;
+            this.username = null;
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    public String[] regist(String username, String password, String confirmPassword, String name, String phone,
+    public String[] regist(String username,
+            String password,
+            String confirmPassword,
+            String name,
+            String phone,
             int balance) {
         if (username.equals("") || dbMgr.verifyUsername(username)) {
-            return new String[] { "Fail", "There has the same username in the system" };
+            return new String[] { "Fail",
+                "There has the same username in the system" };
+        } else if (username.length() > 20) {
+            return new String[] { "Fail",
+                "The username length need under than 20."};
         } else if (!password.equals(confirmPassword)) {
             return new String[] { "Fail", "Password confirm incorrect." };
         }
@@ -45,10 +54,12 @@ public class Controller {
         return new String[] { "Success" };
     }
 
-    public String[] changePassword(String password, String newPassword, String confirmPassword) {
-        if (eccrypt(password).equals(dbMgr.getUserPassword(userID))) {
+    public String[] changePassword(String password,
+            String newPassword,
+            String confirmPassword) {
+        if (eccrypt(password).equals(dbMgr.getUserPassword(this.username))) {
             if (newPassword.equals(confirmPassword)) {
-                dbMgr.setUserPassword(userID, eccrypt(newPassword));
+                dbMgr.setUserPassword(this.username, eccrypt(newPassword));
                 return new String[] { "Success" };
             } else {
                 return new String[] { "Fail", "Password confirm incorrect." };
@@ -63,6 +74,8 @@ public class Controller {
 
     public String[] makeTransaction(String payerID, int amount) {
         if (amount > dbMgr.getUserBalance(payerID)) {
+            dbMgr.addTransaction(this.username, payerID, amount, 1,
+                "Payer balance is not enough.");
             return new String[] { "Fail", "Payer's balance is not enough." };
         } else {
             int result = JOptionPane.showConfirmDialog(null,
@@ -72,9 +85,13 @@ public class Controller {
                 JOptionPane.QUESTION_MESSAGE);
             if (result == JOptionPane.YES_OPTION) {
                 dbMgr.deductUserMoney(payerID, amount);
-                dbMgr.addUserMoney(userID, amount);
+                dbMgr.addUserMoney(this.username, amount);
+                dbMgr.addTransaction(this.username, payerID, amount, 0,
+                    null);
                 return new String[] { "Success" };
             } else {
+                dbMgr.addTransaction(this.username, payerID, amount, 1,
+                    "Payer reject the amount.");
                 return new String[] { "Fail", "Payer reject the amount." };
             }
         }
@@ -102,29 +119,33 @@ public class Controller {
             return null;
         }
     }
+
+    // public String[] getUserHistory() {
+
+    // }
     
 
     public String getUserID() {
-        return userID;
+        return this.username;
     }
 
     public String getUserPassword() {
-        return dbMgr.getUserPassword(userID);
+        return dbMgr.getUserPassword(this.username);
     }
 
     public String getUserName() {
-        return dbMgr.getUserName(userID);
+        return dbMgr.getUserName(this.username);
     }
 
     public int getUserBalance() {
-        return dbMgr.getUserBalance(userID);
+        return dbMgr.getUserBalance(this.username);
     }
 
     public String getUserQRCodeID() {
-        return dbMgr.getUserQRCodeID(userID);
+        return dbMgr.getUserQRCodeID(this.username);
     }
 
     public String getUserPhone() {
-        return dbMgr.getUserPhone(userID);
+        return dbMgr.getUserPhone(this.username);
     }
 }
