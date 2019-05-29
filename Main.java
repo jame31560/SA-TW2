@@ -69,8 +69,8 @@ public class Main {
 						"\nPlease select what do you want to do.\n");
 					break;
 				case "5":
-					console.printf("\nShow Transaction History\n"); 
-					// String[] historyList = c.getUserHistory();
+					console.printf("\nShow Transaction History\n");
+					showTransactionHistory(); 
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
@@ -217,5 +217,24 @@ public class Main {
 				0);
 		}
 		console.printf("\nRegist Success\n");
+	}
+
+	public static void showTransactionHistory() {
+		String[][] historyList = c.getUserHistory();
+		for(int i = 0; i < historyList.length; i++) {
+			console.printf("\nTransaction No.: %s\n"
+				+ "Amount: %s\n"
+				+ "Payee : %s | Payer: %s\n",
+				historyList[i][0],
+				historyList[i][1],
+				historyList[i][5],
+				historyList[i][6]);
+			if (historyList[i][3].equals("0")) {
+				console.printf("Status: Success\n");
+			} else {
+				console.printf("Status: Fail\nReason: %s\n", historyList[i][4]);
+			}
+			console.printf("Time  : %s\n", historyList[i][2]);
+		}
 	}
 }

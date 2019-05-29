@@ -120,9 +120,14 @@ public class Controller {
         }
     }
 
-    // public String[] getUserHistory() {
-
-    // }
+    public String[][] getUserHistory() {
+        int[] HistoryID = dbMgr.getUserTransactionHistory(this.username);
+        String[][] result = new String[HistoryID.length][7];
+        for (int i = 0; i < HistoryID.length; i++) {
+            result[i] = dbMgr.getTransactionDetail(HistoryID[i]);
+        }
+        return result;
+    }
     
 
     public String getUserID() {
