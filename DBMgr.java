@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBMgr {
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rs = null;
+    private Connection conn = null;
+    private Statement stmt = null;
+    private ResultSet rs = null;
 
     DBMgr () {
         try{

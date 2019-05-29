@@ -232,7 +232,8 @@ public class Main {
 			if (historyList[i][3].equals("0")) {
 				console.printf("Status: Success\n");
 			} else {
-				console.printf("Status: Fail\nReason: %s\n", historyList[i][4]);
+				console.printf("Status: Fail\nReason: %s\n", 
+					historyList[i][4]);
 			}
 			console.printf("Time  : %s\n", historyList[i][2]);
 		}

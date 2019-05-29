@@ -1,13 +1,11 @@
-import java.io.Console;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JOptionPane;
 
 public class Controller {
-    DBMgr dbMgr = new DBMgr();
+    private DBMgr dbMgr = new DBMgr();
     private String username = null;
-    Console console = System.console();
 
     public void setUsingUsername(String username) {
         this.username = username;
