@@ -238,7 +238,8 @@ public class DBMgr {
                 + "WHERE username = '" + username + "';");
             rs.next();
             int[] result = new int[rs.getInt("count(*)")];
-            rs = stmt.executeQuery("SELECT transaction_id FROM transaction_detail "
+            rs = stmt.executeQuery("SELECT transaction_id "
+                + "FROM transaction_detail "
                 + "WHERE username = '" + username + "' "
                 + "ORDER BY transaction_id ASC");
             int i = 0;
