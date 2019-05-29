@@ -1,13 +1,11 @@
-import java.io.Console;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JOptionPane;
 
 public class Controller {
-    DBMgr dbMgr = new DBMgr();
+    private DBMgr dbMgr = new DBMgr();
     private String username = null;
-    Console console = System.console();
 
     public void setUsingUsername(String username) {
         this.username = username;
@@ -120,9 +118,14 @@ public class Controller {
         }
     }
 
-    // public String[] getUserHistory() {
-
-    // }
+    public String[][] getUserHistory() {
+        int[] HistoryID = dbMgr.getUserTransactionHistory(this.username);
+        String[][] result = new String[HistoryID.length][7];
+        for (int i = 0; i < HistoryID.length; i++) {
+            result[i] = dbMgr.getTransactionDetail(HistoryID[i]);
+        }
+        return result;
+    }
     
 
     public String getUserID() {
