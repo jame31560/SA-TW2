@@ -1,97 +1,40 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.swing.JOptionPane;
-
 public class Controller {
-    private DBMgr dbMgr = new DBMgr();
-    private String username = null;
+    private View v = new View();
+    private DBMgr db = new DBMgr();
+    private User user = null;
 
-    public void setUsingUsername(String username) {
-        this.username = username;
+    public void process() {
+        v.shoWelcome();
+        String command = null;
+        while (command == null || !command.equals("3")) {
+            if (command != null) {
+                switch(command) {
+                    case "1":
+                        login(v.showLoginForm());
+                        break;
+                    case "2": 
+                        break;
+                    default: 
+                        v.showError("The input seems not the options.");
+                }
+            }
+            command = v.showMenu();
+        }
     }
 
-    public boolean login(String username, String password) {
-        if (dbMgr.verifyUsername(username)) {
-            if (eccrypt(password).equals(dbMgr.getUserPassword(username))) {
-                this.setUsingUsername(username);
+    public boolean login(String[] loginInfo) {
+        user= db.getUser(loginInfo[0]);
+        if (this.user != null) {
+            if (eccrypt(loginInfo[1]).equals(user.getPassword())) {
                 return true;
             } else {
                 return false;
             }
         } else {
             return false;
-        }
-    }
-
-    public boolean logout() {
-        try {
-            this.username = null;
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    public String[] regist(String username,
-            String password,
-            String confirmPassword,
-            String name,
-            String phone,
-            int balance) {
-        if (username.equals("") || dbMgr.verifyUsername(username)) {
-            return new String[] { "Fail",
-                "There has the same username in the system" };
-        } else if (username.length() > 20) {
-            return new String[] { "Fail",
-                "The username length need under than 20."};
-        } else if (!password.equals(confirmPassword)) {
-            return new String[] { "Fail", "Password confirm incorrect." };
-        }
-        dbMgr.addUser(username, eccrypt(password), name, phone);
-        return new String[] { "Success" };
-    }
-
-    public String[] changePassword(String password,
-            String newPassword,
-            String confirmPassword) {
-        if (eccrypt(password).equals(dbMgr.getUserPassword(this.username))) {
-            if (newPassword.equals(confirmPassword)) {
-                dbMgr.setUserPassword(this.username, eccrypt(newPassword));
-                return new String[] { "Success" };
-            } else {
-                return new String[] { "Fail", "Password confirm incorrect." };
-            }
-        }
-        return new String[] { "Fail", "Password incorrect." };
-    }
-
-    public String getPayer(String QRCodeID) {
-        return dbMgr.getUsernameByQRCodeID(QRCodeID);
-    }
-
-    public String[] makeTransaction(String payerID, int amount) {
-        if (amount > dbMgr.getUserBalance(payerID)) {
-            dbMgr.addTransaction(this.username, payerID, amount, 1,
-                "Payer balance is not enough.");
-            return new String[] { "Fail", "Payer's balance is not enough." };
-        } else {
-            int result = JOptionPane.showConfirmDialog(null,
-                "Is the amount right?",
-                "Confirm",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-            if (result == JOptionPane.YES_OPTION) {
-                dbMgr.deductUserMoney(payerID, amount);
-                dbMgr.addUserMoney(this.username, amount);
-                dbMgr.addTransaction(this.username, payerID, amount, 0,
-                    null);
-                return new String[] { "Success" };
-            } else {
-                dbMgr.addTransaction(this.username, payerID, amount, 1,
-                    "Payer reject the amount.");
-                return new String[] { "Fail", "Payer reject the amount." };
-            }
         }
     }
 
@@ -116,39 +59,5 @@ public class Controller {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public String[][] getUserHistory() {
-        int[] HistoryID = dbMgr.getUserTransactionHistory(this.username);
-        String[][] result = new String[HistoryID.length][7];
-        for (int i = 0; i < HistoryID.length; i++) {
-            result[i] = dbMgr.getTransactionDetail(HistoryID[i]);
-        }
-        return result;
-    }
-    
-
-    public String getUserID() {
-        return this.username;
-    }
-
-    public String getUserPassword() {
-        return dbMgr.getUserPassword(this.username);
-    }
-
-    public String getUserName() {
-        return dbMgr.getUserName(this.username);
-    }
-
-    public int getUserBalance() {
-        return dbMgr.getUserBalance(this.username);
-    }
-
-    public String getUserQRCodeID() {
-        return dbMgr.getUserQRCodeID(this.username);
-    }
-
-    public String getUserPhone() {
-        return dbMgr.getUserPhone(this.username);
     }
 }

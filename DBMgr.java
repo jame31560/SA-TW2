@@ -17,7 +17,6 @@ public class DBMgr {
                 + "user=root&"
                 + "password=root&"
                 + "useUnicode=true");
-            System.out.println("connect success to MySQL");
             stmt = conn.createStatement();
         } catch(SQLException excpt) {
             excpt.printStackTrace();
@@ -52,6 +51,21 @@ public class DBMgr {
                 + "';");
             if(rs.next()){
                 return rs.getString("username");
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public User getUser(String username) {
+        try {
+            rs = stmt.executeQuery("SELECT username "
+                + "FROM userinfo WHERE username = '"
+                + username
+                + "';");
+            if(rs.next()){
+                return new User(rs.getString("username"));
             }
             return null;
         } catch (Exception e) {
