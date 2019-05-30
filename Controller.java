@@ -5,16 +5,19 @@ import javax.swing.JOptionPane;
 
 public class Controller {
     private DBMgr dbMgr = new DBMgr();
+    private User user = null;
     private String username = null;
-
     public void setUsingUsername(String username) {
         this.username = username;
     }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public boolean login(String username, String password) {
-        if (dbMgr.verifyUsername(username)) {
-            if (eccrypt(password).equals(dbMgr.getUserPassword(username))) {
-                this.setUsingUsername(username);
+        setUser(dbMgr.getUser(username));
+        if (this.user != null) {
+            if (eccrypt(password).equals(user.getPassword())) {
                 return true;
             } else {
                 return false;
@@ -26,7 +29,7 @@ public class Controller {
 
     public boolean logout() {
         try {
-            this.username = null;
+            setUser(null);
         } catch (Exception e) {
             return false;
         }
@@ -126,29 +129,12 @@ public class Controller {
         }
         return result;
     }
-    
 
-    public String getUserID() {
-        return this.username;
-    }
 
-    public String getUserPassword() {
-        return dbMgr.getUserPassword(this.username);
-    }
-
-    public String getUserName() {
-        return dbMgr.getUserName(this.username);
-    }
-
-    public int getUserBalance() {
-        return dbMgr.getUserBalance(this.username);
-    }
-
-    public String getUserQRCodeID() {
-        return dbMgr.getUserQRCodeID(this.username);
-    }
-
-    public String getUserPhone() {
-        return dbMgr.getUserPhone(this.username);
+    public String getUserInfo() {
+        return "Name: " + user.getName()
+            + "\nUsername: " + user.getUsername()
+            + "\nPhone: " + user.getPhone()
+            + "\nBalance: NT$ "+ String.format("%,d\n", user.getBalance());
     }
 }

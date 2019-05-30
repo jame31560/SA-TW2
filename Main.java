@@ -52,7 +52,7 @@ public class Main {
 					break;
 				case "2":
 					console.printf("\nShow Info\n"); 
-					showInfo();
+					console.printf(c.getUserInfo());
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
@@ -160,13 +160,6 @@ public class Main {
 			console.printf("Transaction amount: %,d\n", amount);
 			showInfo();
 		}
-	}
-
-	public static void showInfo() {
-        console.printf("Name: %s\n", c.getUserName());
-        console.printf("Username: %s\n", c.getUserID());
-        console.printf("Phone: %s\n", c.getUserPhone());
-        console.printf("Balance: NT$ %,d\n", c.getUserBalance());
 	}
 
 	public static void changePassword() {
