@@ -217,12 +217,10 @@ public class DBMgr {
             rs.next();
             transaction_id = rs.getInt("auto_increment");
             String sql = ("INSERT INTO `transaction_list` "
-                + "(`id`, `amount`, `status`, `reason`) VALUES ("
+                + "(`id`, `amount`, `status`) VALUES ("
                 + transaction_id + ", "
                 + transaction.getAmount() + ", "
-                + (transaction.getStatus()?
-                    "0, NULL);":
-                    "1, '" + transaction.getReason() + "');"));
+                + transaction.getStatus() + ");");
             stmt.executeUpdate(sql);
             sql = ("INSERT INTO `transaction_detail` "
                 + "(`transaction_id`, `username`, `role`) VALUES ("
@@ -262,23 +260,29 @@ public class DBMgr {
 
     public String[] getTransactionDetail(int transactionID) {
         try {
-            rs = stmt.executeQuery("SELECT a.*, b.* "
+            rs = stmt.executeQuery("SELECT a.*, b.*, c.description "
                 + "FROM transaction_detail as a "
                 + "RIGHT JOIN transaction_list AS b "
                 + "ON b.id = a.transaction_id "
+                + "RIGHT JOIN transaction_status AS c "
+                + "ON b.status = c.id "
                 + "WHERE a.transaction_id = " + transactionID + " "
                 + "ORDER BY `a`.`role` ASC");
-            rs.next();
-            String[] result = new String[7];
-            result[0] = String.valueOf(rs.getInt("transaction_id"));
-            result[1] = String.valueOf(rs.getInt("amount"));
-            result[2] = rs.getString("datetime");
-            result[3] = String.valueOf(rs.getInt("status"));
-            result[4] = rs.getString("reason");
-            result[5] = rs.getString("username");
-            rs.next();
-            result[6] = rs.getString("username");
-            return result;
+            if (rs.next()) {
+                String[] result = new String[7];
+                result[0] = String.valueOf(rs.getInt("transaction_id"));
+                result[1] = String.valueOf(rs.getInt("amount"));
+                result[2] = rs.getString("datetime");
+                result[3] = String.valueOf(rs.getInt("status"));
+                result[4] = rs.getString("description");
+                result[5] = rs.getString("username");
+                rs.next();
+                result[6] = rs.getString("username");
+                return result;
+            } else {
+                return null;
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
             return null;

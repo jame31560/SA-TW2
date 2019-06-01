@@ -103,7 +103,6 @@ public class Main {
 				console.readPassword("Password\n>>> "));
 		}
 		console.printf("\nLogin success.\n");
-		console.printf("\nLogin success.\n");
 		console.printf("Hello %s\n", c.getName());
 	}
 
@@ -155,7 +154,7 @@ public class Main {
 
 		Transaction transaction = c.makeTransaction(payerID, amount);
 		String msg = "\nTransaction ";
-		if (transaction.getStatus()) {
+		if (transaction.getStatus() == 1) {
             msg += "success.\n";
             msg += String.format("Transaction amount: %,d\n",
                 transaction.getAmount());
