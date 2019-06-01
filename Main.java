@@ -52,7 +52,7 @@ public class Main {
 					break;
 				case "2":
 					console.printf("\nShow Info\n"); 
-					showInfo();
+					console.printf(c.getUserInfo());
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
@@ -64,7 +64,7 @@ public class Main {
 					break;
 				case "4":
 					console.printf("\nShow QRCode\n"); 
-					console.printf("QRCodeID: %s\n", c.getUserQRCodeID());
+					showQRCode(c.getQRCodeID());
 					console.printf(
 						"\nPlease select what do you want to do.\n");
 					break;
@@ -87,6 +87,10 @@ public class Main {
 		}
 	}
 
+	public static void showQRCode(String QRCodeID) {
+		console.printf(QRCodeID);
+	}
+
 	public static void login() {
 		String username = console.readLine("Username\n>>> ");
 		String password = String.valueOf(
@@ -99,8 +103,7 @@ public class Main {
 				console.readPassword("Password\n>>> "));
 		}
 		console.printf("\nLogin success.\n");
-		console.printf("\nLogin success.\n");
-		console.printf("Hello %s\n", c.getUserName());
+		console.printf("Hello %s\n", c.getName());
 	}
 
 	public static void logout() {
@@ -116,12 +119,11 @@ public class Main {
 		boolean flg = true;
 		boolean confirm = true;
 		int amount = -1;
-		String[] result;
 
         while (flg) {
             QRCodeID = console.readLine(
 				"\nFill in the QRcode ID of the scanner result\n>>> ");
-            if(QRCodeID.equals(c.getUserQRCodeID())) {
+            if(QRCodeID.equals(c.getQRCodeID())) {
 				console.printf(
 					"\nYou can not make transaction with yourself.\n");
 				console.printf("Please fill in again.\n");
@@ -150,23 +152,23 @@ public class Main {
 			}
 		}
 
-		result = c.makeTransaction(payerID, amount);
-
-		if (result[0].equals("Fail")) {
-			console.printf("\nTransaction fail.\n");
-			console.printf("%s\n", result[1]);
+		Transaction transaction = c.makeTransaction(payerID, amount);
+		String msg = "\nTransaction ";
+		if (transaction.getStatus() == 1) {
+            msg += "success.\n";
+            msg += String.format("Transaction amount: %,d\n",
+                transaction.getAmount());
+            msg += ("Payer: " +  transaction.getPayerID() + "\n");
 		} else {
-			console.printf("\nTransaction success.\n");
-			console.printf("Transaction amount: %,d\n", amount);
-			showInfo();
+			msg += "fail.\n";
+            msg += ("Reason: " + transaction.getReason() + "\n");
+            msg += String.format("Transaction amount: %,d\n",
+                transaction.getAmount());
+            msg += ("Payer: " +  transaction.getPayerID() + "\n");
 		}
-	}
 
-	public static void showInfo() {
-        console.printf("Name: %s\n", c.getUserName());
-        console.printf("Username: %s\n", c.getUserID());
-        console.printf("Phone: %s\n", c.getUserPhone());
-        console.printf("Balance: NT$ %,d\n", c.getUserBalance());
+		console.printf(msg);
+
 	}
 
 	public static void changePassword() {

@@ -1,22 +1,23 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.swing.JOptionPane;
+// import javax.swing.JOptionPane;
 
 public class Controller {
-    private DBMgr dbMgr = new DBMgr();
-    private String username = null;
+    private static DBMgr dbMgr = new DBMgr();
+    private User user = null;
 
-    public void setUsingUsername(String username) {
-        this.username = username;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean login(String username, String password) {
-        if (dbMgr.verifyUsername(username)) {
-            if (eccrypt(password).equals(dbMgr.getUserPassword(username))) {
-                this.setUsingUsername(username);
+        setUser(dbMgr.getUser(username));
+        if (this.user != null) {
+            if (eccrypt(password).equals(user.getPassword())) {
                 return true;
             } else {
+                System.out.println(user.getPassword());
                 return false;
             }
         } else {
@@ -26,7 +27,7 @@ public class Controller {
 
     public boolean logout() {
         try {
-            this.username = null;
+            setUser(null);
         } catch (Exception e) {
             return false;
         }
@@ -55,9 +56,9 @@ public class Controller {
     public String[] changePassword(String password,
             String newPassword,
             String confirmPassword) {
-        if (eccrypt(password).equals(dbMgr.getUserPassword(this.username))) {
+        if (eccrypt(password).equals(user.getPassword())) {
             if (newPassword.equals(confirmPassword)) {
-                dbMgr.setUserPassword(this.username, eccrypt(newPassword));
+                user.setPassword(eccrypt(newPassword));
                 return new String[] { "Success" };
             } else {
                 return new String[] { "Fail", "Password confirm incorrect." };
@@ -70,29 +71,9 @@ public class Controller {
         return dbMgr.getUsernameByQRCodeID(QRCodeID);
     }
 
-    public String[] makeTransaction(String payerID, int amount) {
-        if (amount > dbMgr.getUserBalance(payerID)) {
-            dbMgr.addTransaction(this.username, payerID, amount, 1,
-                "Payer balance is not enough.");
-            return new String[] { "Fail", "Payer's balance is not enough." };
-        } else {
-            int result = JOptionPane.showConfirmDialog(null,
-                "Is the amount right?",
-                "Confirm",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-            if (result == JOptionPane.YES_OPTION) {
-                dbMgr.deductUserMoney(payerID, amount);
-                dbMgr.addUserMoney(this.username, amount);
-                dbMgr.addTransaction(this.username, payerID, amount, 0,
-                    null);
-                return new String[] { "Success" };
-            } else {
-                dbMgr.addTransaction(this.username, payerID, amount, 1,
-                    "Payer reject the amount.");
-                return new String[] { "Fail", "Payer reject the amount." };
-            }
-        }
+    public Transaction makeTransaction(String payerID, int amount) {
+        User payer = dbMgr.getUser(payerID);
+        return user.makeTransaction(payer, amount);
     }
 
     public String eccrypt(String info){
@@ -119,36 +100,26 @@ public class Controller {
     }
 
     public String[][] getUserHistory() {
-        int[] HistoryID = dbMgr.getUserTransactionHistory(this.username);
+        int[] HistoryID = user.historyTransactionsID();
         String[][] result = new String[HistoryID.length][7];
         for (int i = 0; i < HistoryID.length; i++) {
             result[i] = dbMgr.getTransactionDetail(HistoryID[i]);
         }
         return result;
     }
-    
 
-    public String getUserID() {
-        return this.username;
+    public String getUserInfo() {
+        return "Name: " + user.getName()
+            + "\nUsername: " + user.getUsername()
+            + "\nPhone: " + user.getPhone()
+            + "\nBalance: NT$ "+ String.format("%,d\n", user.getBalance());
     }
 
-    public String getUserPassword() {
-        return dbMgr.getUserPassword(this.username);
+    public String getQRCodeID() {
+        return user.getQRCodeID();
     }
 
-    public String getUserName() {
-        return dbMgr.getUserName(this.username);
-    }
-
-    public int getUserBalance() {
-        return dbMgr.getUserBalance(this.username);
-    }
-
-    public String getUserQRCodeID() {
-        return dbMgr.getUserQRCodeID(this.username);
-    }
-
-    public String getUserPhone() {
-        return dbMgr.getUserPhone(this.username);
+    public String getName() {
+        return user.getName();
     }
 }
