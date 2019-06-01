@@ -3,11 +3,6 @@ import javax.swing.JOptionPane;
 public class User{
     private DBMgr dbMgr = new DBMgr();
     private String username = null;
-    private String password = dbMgr.getUserPassword(this.username);
-    private String name = dbMgr.getUserName(this.username);
-    private String phone = dbMgr.getUserPhone(this.username);
-    private String QRCodeID = dbMgr.getUserQRCodeID(this.username);
-    private int balance = dbMgr.getUserBalance(this.username);
 
     User(String username) {
         setUsername(username);
@@ -22,23 +17,23 @@ public class User{
     }
 
     public String getPassword() {
-        return password;
+        return dbMgr.getUserPassword(this.username);
     }
 
     public String getName() {
-        return name;
+        return dbMgr.getUserName(this.username);
     }
 
     public String getPhone() {
-        return phone;
+        return dbMgr.getUserPhone(this.username);
     }
 
     public int getBalance() {
-        return balance;
+        return dbMgr.getUserBalance(this.username);
     }
 
     public String getQRCodeID() {
-        return QRCodeID;
+        return dbMgr.getUserQRCodeID(this.username);
     }
     
     public void setPassword(String password) {
