@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class Controller {
     private static DBMgr dbMgr = new DBMgr();
-    private static Main view = new Main();
     private User user = null;
 
     public void setUser(User user) {
@@ -72,23 +71,9 @@ public class Controller {
         return dbMgr.getUsernameByQRCodeID(QRCodeID);
     }
 
-    public void makeTransaction(String payerID, int amount) {
+    public Transaction makeTransaction(String payerID, int amount) {
         User payer = dbMgr.getUser(payerID);
-        Transaction transaction = user.makeTransaction(payer, amount);
-        String msg = "\nTransaction ";
-        if (transaction.getStatus()) {
-            msg += "success.\n";
-            msg += String.format("Transaction amount: %,d\n",
-                transaction.getAmount());
-            msg += ("Payer: " +  transaction.getPayerID() + "\n");
-		} else {
-            msg += "fail.\n";
-            msg += ("Reason: " + transaction.getReason() + "\n");
-            msg += String.format("Transaction amount: %,d\n",
-                transaction.getAmount());
-            msg += ("Payer: " +  transaction.getPayerID() + "\n");
-        }
-        view.showTransaction(msg);
+        return user.makeTransaction(payer, amount);
     }
 
     public String eccrypt(String info){

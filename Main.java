@@ -153,12 +153,23 @@ public class Main {
 			}
 		}
 
-		c.makeTransaction(payerID, amount);
+		Transaction transaction = c.makeTransaction(payerID, amount);
+		String msg = "\nTransaction ";
+		if (transaction.getStatus()) {
+            msg += "success.\n";
+            msg += String.format("Transaction amount: %,d\n",
+                transaction.getAmount());
+            msg += ("Payer: " +  transaction.getPayerID() + "\n");
+		} else {
+			msg += "fail.\n";
+            msg += ("Reason: " + transaction.getReason() + "\n");
+            msg += String.format("Transaction amount: %,d\n",
+                transaction.getAmount());
+            msg += ("Payer: " +  transaction.getPayerID() + "\n");
+		}
 
-	}
-
-	public void showTransaction(String msg) {
 		console.printf(msg);
+
 	}
 
 	public static void changePassword() {
