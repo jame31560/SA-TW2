@@ -1,16 +1,15 @@
+import javax.swing.JOptionPane;
+
 public class User{
-    private String username;
     private DBMgr dbMgr = new DBMgr();
+    private String username = null;
+    private String password = dbMgr.getUserPassword(this.username);
+    private String name = dbMgr.getUserName(this.username);
+    private String phone = dbMgr.getUserPhone(this.username);
+    private String QRCodeID = dbMgr.getUserQRCodeID(this.username);
+    private int balance = dbMgr.getUserBalance(this.username);
 
     User(String username) {
-        setUsername(username);
-    }
-
-    User(String username,
-            String password,
-            String name,
-            String phone) {
-        dbMgr.addUser(username, password, name, phone);
         setUsername(username);
     }
 
@@ -23,34 +22,53 @@ public class User{
     }
 
     public String getPassword() {
-        return dbMgr.getUserPassword(this.username);
+        return password;
     }
 
     public String getName() {
-        return dbMgr.getUserName(this.username);
+        return name;
     }
 
     public String getPhone() {
-        return dbMgr.getUserPhone(this.username);
+        return phone;
     }
 
     public int getBalance() {
-        return dbMgr.getUserBalance(this.username);
+        return balance;
     }
 
-    public String geyQRCode() {
-        return dbMgr.getUserQRCodeID(this.username);
+    public String geyQRCodeID() {
+        return QRCodeID;
     }
     
-    public void setUserPassword(String password) {
+    public void setPassword(String password) {
         dbMgr.setUserPassword(this.username, password);
     }
 
-    public void deductUserMoney(int amount) {
+    public void deductMoney(int amount) {
         dbMgr.deductUserMoney(this.username, amount);
     }
 
-    public void addUserMoney(int amount) {
+    public void addMoney(int amount) {
         dbMgr.addUserMoney(this.username, amount);
+    }
+
+    public Transaction makeTransaction(User payer, int amount) {
+        Transaction transaction = new Transaction(this, payer, amount);
+        dbMgr.addTransaction(transaction);
+        return transaction;
+    }
+
+    public boolean confirmAmount(String payeeID, int amount) {
+        int result = JOptionPane.showConfirmDialog(null,
+            "Is the amount right?",
+            "Confirm",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

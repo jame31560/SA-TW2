@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBMgr {
-    private Connection conn = null;
+    static private Connection conn = null;
     private Statement stmt = null;
     private ResultSet rs = null;
 
@@ -207,11 +207,7 @@ public class DBMgr {
         this.setUserBalance(username, balance);
     }
 
-    public void addTransaction(String payee,
-            String payer,
-            int amount,
-            int status,
-            String reason) {
+    public void addTransaction(Transaction transaction) {
         try {
             int transaction_id;
             rs = stmt.executeQuery("SELECT auto_increment "
@@ -223,22 +219,18 @@ public class DBMgr {
             String sql = ("INSERT INTO `transaction_list` "
                 + "(`id`, `amount`, `status`, `reason`) VALUES ("
                 + transaction_id + ", "
-                + amount + ", "
-                + status + ", ");
-            if (status == 0) {
-            // 0 means success, 1 means fail.
-                sql += "NULL);";
-            } else {
-                sql += "'" + reason + "');";
-            }
+                + transaction.getAmount() + ", "
+                + (transaction.getStatus()?
+                    "0, NULL);":
+                    "1, '" + transaction.getReason() + "');"));
             stmt.executeUpdate(sql);
             sql = ("INSERT INTO `transaction_detail` "
                 + "(`transaction_id`, `username`, `role`) VALUES ("
                 + transaction_id + ", '"
-                + payee + "', "
+                + transaction.getPayeeID() + "', "
                 + "0), ("
                 + transaction_id + ", '"
-                + payer + "', "
+                + transaction.getPayerID() + "', "
                 + "1);");
             stmt.executeUpdate(sql);
         } catch(Exception e) {

@@ -1,7 +1,7 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.swing.JOptionPane;
+// import javax.swing.JOptionPane;
 
 public class Controller {
     private DBMgr dbMgr = new DBMgr();
@@ -73,30 +73,30 @@ public class Controller {
         return dbMgr.getUsernameByQRCodeID(QRCodeID);
     }
 
-    public String[] makeTransaction(String payerID, int amount) {
-        if (amount > dbMgr.getUserBalance(payerID)) {
-            dbMgr.addTransaction(this.username, payerID, amount, 1,
-                "Payer balance is not enough.");
-            return new String[] { "Fail", "Payer's balance is not enough." };
-        } else {
-            int result = JOptionPane.showConfirmDialog(null,
-                "Is the amount right?",
-                "Confirm",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-            if (result == JOptionPane.YES_OPTION) {
-                dbMgr.deductUserMoney(payerID, amount);
-                dbMgr.addUserMoney(this.username, amount);
-                dbMgr.addTransaction(this.username, payerID, amount, 0,
-                    null);
-                return new String[] { "Success" };
-            } else {
-                dbMgr.addTransaction(this.username, payerID, amount, 1,
-                    "Payer reject the amount.");
-                return new String[] { "Fail", "Payer reject the amount." };
-            }
-        }
-    }
+    // public String[] makeTransaction(String payerID, int amount) {
+    //     if (amount > dbMgr.getUserBalance(payerID)) {
+    //         dbMgr.addTransaction(this.username, payerID, amount, 1,
+    //             "Payer balance is not enough.");
+    //         return new String[] { "Fail", "Payer's balance is not enough." };
+    //     } else {
+    //         int result = JOptionPane.showConfirmDialog(null,
+    //             "Is the amount right?",
+    //             "Confirm",
+    //             JOptionPane.YES_NO_OPTION,
+    //             JOptionPane.QUESTION_MESSAGE);
+    //         if (result == JOptionPane.YES_OPTION) {
+    //             dbMgr.deductUserMoney(payerID, amount);
+    //             dbMgr.addUserMoney(this.username, amount);
+    //             dbMgr.addTransaction(this.username, payerID, amount, 0,
+    //                 null);
+    //             return new String[] { "Success" };
+    //         } else {
+    //             dbMgr.addTransaction(this.username, payerID, amount, 1,
+    //                 "Payer reject the amount.");
+    //             return new String[] { "Fail", "Payer reject the amount." };
+    //         }
+    //     }
+    // }
 
     public String eccrypt(String info){
         MessageDigest sha;
