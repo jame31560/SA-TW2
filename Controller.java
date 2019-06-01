@@ -4,12 +4,10 @@ import java.security.NoSuchAlgorithmException;
 // import javax.swing.JOptionPane;
 
 public class Controller {
-    private DBMgr dbMgr = new DBMgr();
+    private static DBMgr dbMgr = new DBMgr();
+    private static Main view = new Main();
     private User user = null;
-    private String username = null;
-    public void setUsingUsername(String username) {
-        this.username = username;
-    }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -58,9 +56,9 @@ public class Controller {
     public String[] changePassword(String password,
             String newPassword,
             String confirmPassword) {
-        if (eccrypt(password).equals(dbMgr.getUserPassword(this.username))) {
+        if (eccrypt(password).equals(user.getPassword())) {
             if (newPassword.equals(confirmPassword)) {
-                dbMgr.setUserPassword(this.username, eccrypt(newPassword));
+                user.setPassword(eccrypt(newPassword));
                 return new String[] { "Success" };
             } else {
                 return new String[] { "Fail", "Password confirm incorrect." };
@@ -73,30 +71,24 @@ public class Controller {
         return dbMgr.getUsernameByQRCodeID(QRCodeID);
     }
 
-    // public String[] makeTransaction(String payerID, int amount) {
-    //     if (amount > dbMgr.getUserBalance(payerID)) {
-    //         dbMgr.addTransaction(this.username, payerID, amount, 1,
-    //             "Payer balance is not enough.");
-    //         return new String[] { "Fail", "Payer's balance is not enough." };
-    //     } else {
-    //         int result = JOptionPane.showConfirmDialog(null,
-    //             "Is the amount right?",
-    //             "Confirm",
-    //             JOptionPane.YES_NO_OPTION,
-    //             JOptionPane.QUESTION_MESSAGE);
-    //         if (result == JOptionPane.YES_OPTION) {
-    //             dbMgr.deductUserMoney(payerID, amount);
-    //             dbMgr.addUserMoney(this.username, amount);
-    //             dbMgr.addTransaction(this.username, payerID, amount, 0,
-    //                 null);
-    //             return new String[] { "Success" };
-    //         } else {
-    //             dbMgr.addTransaction(this.username, payerID, amount, 1,
-    //                 "Payer reject the amount.");
-    //             return new String[] { "Fail", "Payer reject the amount." };
-    //         }
-    //     }
-    // }
+    public void makeTransaction(String payerID, int amount) {
+        User payer = dbMgr.getUser(payerID);
+        Transaction transaction = user.makeTransaction(payer, amount);
+        String msg = "\nTransaction ";
+        if (transaction.getStatus()) {
+            msg += "success.\n";
+            msg += String.format("Transaction amount: %,d\n",
+                transaction.getAmount());
+            msg += ("Payer: " +  transaction.getPayerID() + "\n");
+		} else {
+            msg += "fail.\n";
+            msg += ("Reason: " + transaction.getReason() + "\n");
+            msg += String.format("Transaction amount: %,d\n",
+                transaction.getAmount());
+            msg += ("Payer: " +  transaction.getPayerID() + "\n");
+        }
+        view.showTransaction(msg);
+    }
 
     public String eccrypt(String info){
         MessageDigest sha;
@@ -122,7 +114,7 @@ public class Controller {
     }
 
     public String[][] getUserHistory() {
-        int[] HistoryID = dbMgr.getUserTransactionHistory(this.username);
+        int[] HistoryID = user.historyTransactionsID();
         String[][] result = new String[HistoryID.length][7];
         for (int i = 0; i < HistoryID.length; i++) {
             result[i] = dbMgr.getTransactionDetail(HistoryID[i]);
@@ -130,11 +122,18 @@ public class Controller {
         return result;
     }
 
-
     public String getUserInfo() {
         return "Name: " + user.getName()
             + "\nUsername: " + user.getUsername()
             + "\nPhone: " + user.getPhone()
             + "\nBalance: NT$ "+ String.format("%,d\n", user.getBalance());
+    }
+
+    public String getQRCodeID() {
+        return user.getQRCodeID();
+    }
+
+    public String getName() {
+        return user.getName();
     }
 }

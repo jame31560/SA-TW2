@@ -37,7 +37,7 @@ public class User{
         return balance;
     }
 
-    public String geyQRCodeID() {
+    public String getQRCodeID() {
         return QRCodeID;
     }
     
@@ -57,6 +57,10 @@ public class User{
         Transaction transaction = new Transaction(this, payer, amount);
         dbMgr.addTransaction(transaction);
         return transaction;
+    }
+
+    public int[] historyTransactionsID() {
+        return dbMgr.getUserTransactionHistory(username);
     }
 
     public boolean confirmAmount(String payeeID, int amount) {
