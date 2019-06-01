@@ -11,7 +11,7 @@ public class Transaction {
         this.amount = amount;
         if (payer.getBalance() < amount) {
             this.status = false;
-            this.reason = "Payer's balance is not enough.";
+            this.reason = "Payer balance is not enough.";
         } else {
             if (payer.confirmAmount(payeeID, amount)) {
                 this.status = true;
