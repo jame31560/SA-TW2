@@ -9,7 +9,7 @@ public class DBMgr {
             String password,
             String name,
             String phone) {
-        db = new DBConnection("INSERT INTO `userinfo` ("
+        db = new DBConnection("INSERT INTO `User` ("
             + "`name`, `username`, `password`, "
             + "`phone`, `QRcodeID`) VALUES ('"
             + name + "', '"
@@ -25,7 +25,7 @@ public class DBMgr {
 
     public String getUsernameByQRCodeID(String QRCodeID) {
         db = new DBConnection("SELECT username "
-            + "FROM userinfo WHERE QRcodeID = '"
+            + "FROM User WHERE QRcodeID = '"
             + QRCodeID
             + "';", "query");
         while(!db.getStatus()) {
@@ -46,18 +46,15 @@ public class DBMgr {
 
     public User getUser(String username) {
         db = new DBConnection("SELECT username "
-            + "FROM userinfo WHERE username = '"
+            + "FROM User WHERE username = '"
             + username
             + "';", "query");
-        int i = 0;
         while(!db.getStatus()) {
             System.out.printf("");
             rs = db.getResultset();
         }
         try {
-            
             if (rs.next()) {
-                
                 return new User(rs.getString("username"));
             } else {
                 return null;
@@ -70,7 +67,7 @@ public class DBMgr {
 
     public boolean verifyUsername(String username) {
         db = new DBConnection("SELECT username "
-            + "FROM userinfo WHERE username = '"
+            + "FROM User WHERE username = '"
             + username
             + "';", "query");
         while(!db.getStatus()) {
@@ -90,9 +87,9 @@ public class DBMgr {
     }
 
     public void setUserPassword(String username, String password) {
-        db = new DBConnection("UPDATE `userinfo` SET `password` = '"
+        db = new DBConnection("UPDATE `User` SET `password` = '"
             + password + "' "
-            + "WHERE `userinfo`.`username` = '"
+            + "WHERE `User`.`username` = '"
             + username + "';", "update");
         while(!db.getStatus()) {
             System.out.printf("");
@@ -101,7 +98,7 @@ public class DBMgr {
     }
     public String getUserPassword(String username) {
         db = new DBConnection("SELECT password " 
-            + "FROM userinfo WHERE username = '" 
+            + "FROM User WHERE username = '" 
             + username 
             + "';", "query");
         while(!db.getStatus()) {
@@ -122,7 +119,7 @@ public class DBMgr {
 
     public String getUserName(String username) {
         db = new DBConnection("SELECT name "
-            + "FROM userinfo WHERE username = '"
+            + "FROM User WHERE username = '"
             + username
             + "';", "query");
         while(!db.getStatus()) {
@@ -143,7 +140,7 @@ public class DBMgr {
 
     public String getUserPhone(String username) {
         db = new DBConnection("SELECT phone "
-            + "FROM userinfo WHERE username = '"
+            + "FROM User WHERE username = '"
             + username
             + "';", "query");
         while(!db.getStatus()) {
@@ -164,7 +161,7 @@ public class DBMgr {
 
     public String getUserQRCodeID(String username) {
         db = new DBConnection("SELECT QRcodeID "
-            + "FROM userinfo WHERE username = '"
+            + "FROM User WHERE username = '"
             + username
             + "';", "query");
         while(!db.getStatus()) {
@@ -185,7 +182,7 @@ public class DBMgr {
 
     public int getUserBalance(String username) {
         db = new DBConnection("SELECT balance "
-            + "FROM userinfo WHERE username = '"
+            + "FROM User WHERE username = '"
             + username
             + "';", "query");
         while(!db.getStatus()) {
@@ -205,7 +202,7 @@ public class DBMgr {
     }
 
     public void setUserBalance(String username, int balance) {
-        db = new DBConnection("UPDATE `userinfo` SET `balance` = '"
+        db = new DBConnection("UPDATE `User` SET `balance` = '"
             + balance + "' "
             + "WHERE `userinfo`.`username` = '"
             + username + "';", "update");
@@ -233,15 +230,15 @@ public class DBMgr {
             db = new DBConnection("SELECT auto_increment "
                 + "FROM information_schema.tables "
                 + "WHERE table_schema='java' "
-                + "AND table_name='transaction_list';", "query");
+                + "AND table_name='Transaction';", "query");
             while(!db.getStatus()) {
                 System.out.printf("");
                 rs = db.getResultset();
             }
             rs.next();
             transaction_id = rs.getInt("auto_increment");
-            String sql = ("INSERT INTO `transaction_list` "
-                + "(`id`, `amount`, `status`) VALUES ("
+            String sql = ("INSERT INTO `Transaction` "
+                + "(`TransactionId`, `amount`, `status`) VALUES ("
                 + transaction_id + ", "
                 + transaction.getAmount() + ", "
                 + transaction.getStatus() + ");");
@@ -250,14 +247,14 @@ public class DBMgr {
                 System.out.printf("");
                 return;
             }
-            sql = ("INSERT INTO `transaction_detail` "
-                + "(`transaction_id`, `username`, `role`) VALUES ("
+            sql = ("INSERT INTO `TransactionDetail` "
+                + "(`TransactionId`, `username`, `role`) VALUES ("
                 + transaction_id + ", '"
                 + transaction.getPayeeID() + "', "
-                + "0), ("
+                + "1), ("
                 + transaction_id + ", '"
                 + transaction.getPayerID() + "', "
-                + "1);");
+                + "2);");
             db = new DBConnection(sql, "update");
             while(!db.getStatus()) {
                 System.out.printf("");
@@ -269,7 +266,7 @@ public class DBMgr {
     }
 
     public int[] getUserTransactionHistory(String username) {
-        db = new DBConnection("SELECT count(*) FROM transaction_detail "
+        db = new DBConnection("SELECT count(*) FROM TransactionDetail "
             + "WHERE username = '" + username + "';", "query");
         while(!db.getStatus()) {
             System.out.printf("");
@@ -278,17 +275,17 @@ public class DBMgr {
         try {
             rs.next();
             int[] result = new int[rs.getInt("count(*)")];
-            db = new DBConnection("SELECT transaction_id "
-                + "FROM transaction_detail "
+            db = new DBConnection("SELECT TransactionId "
+                + "FROM TransactionDetail "
                 + "WHERE username = '" + username + "' "
-                + "ORDER BY transaction_id ASC", "query");
+                + "ORDER BY TransactionId DESC", "query");
             while(!db.getStatus()) {
                 System.out.printf("");
                 rs = db.getResultset();
             }
             int i = 0;
             while(rs.next()){
-                result[i] = rs.getInt("transaction_id");
+                result[i] = rs.getInt("TransactionId");
                 i ++;
             }
             return result;
@@ -300,13 +297,13 @@ public class DBMgr {
     }
 
     public String[] getTransactionDetail(int transactionID) {
-        db = new DBConnection("SELECT a.*, b.*, c.description "
-            + "FROM transaction_detail as a "
-            + "RIGHT JOIN transaction_list AS b "
-            + "ON b.id = a.transaction_id "
-            + "RIGHT JOIN transaction_status AS c "
-            + "ON b.status = c.id "
-            + "WHERE a.transaction_id = " + transactionID + " "
+        db = new DBConnection("SELECT a.*, b.*, c.statusDescription "
+            + "FROM TransactionDetail as a "
+            + "RIGHT JOIN `Transaction` AS b "
+            + "ON b.TransactionId = a.TransactionId "
+            + "RIGHT JOIN TransactionStatus AS c "
+            + "ON b.status = c.status "
+            + "WHERE a.TransactionId = " + transactionID + " "
             + "ORDER BY `a`.`role` ASC", "query");
         while(!db.getStatus()) {
             System.out.printf("");
@@ -315,11 +312,11 @@ public class DBMgr {
         try {
             if (rs.next()) {
                 String[] result = new String[7];
-                result[0] = String.valueOf(rs.getInt("transaction_id"));
+                result[0] = String.valueOf(rs.getInt("TransactionId"));
                 result[1] = String.valueOf(rs.getInt("amount"));
                 result[2] = rs.getString("datetime");
                 result[3] = String.valueOf(rs.getInt("status"));
-                result[4] = rs.getString("description");
+                result[4] = rs.getString("statusDescription");
                 result[5] = rs.getString("username");
                 rs.next();
                 result[6] = rs.getString("username");
