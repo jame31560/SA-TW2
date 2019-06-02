@@ -17,7 +17,6 @@ public class Controller {
             if (eccrypt(password).equals(user.getPassword())) {
                 return true;
             } else {
-                System.out.println(user.getPassword());
                 return false;
             }
         } else {

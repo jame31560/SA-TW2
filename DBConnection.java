@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBConnection extends Thread {
-    static private Connection conn = null;
+    private Connection conn = null;
     private String sql = null;
     private Statement stmt = null;
     private ResultSet rs = null;

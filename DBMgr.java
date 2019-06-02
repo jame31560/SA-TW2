@@ -17,7 +17,8 @@ public class DBMgr {
             + password + "', '"
             + phone + "', '"
             + username + phone + "');", "update");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             return;
         }
     }
@@ -27,7 +28,8 @@ public class DBMgr {
             + "FROM userinfo WHERE QRcodeID = '"
             + QRCodeID
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -47,11 +49,15 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '"
             + username
             + "';", "query");
-        while(db.getStatus()) {
+        int i = 0;
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
+            
             if (rs.next()) {
+                
                 return new User(rs.getString("username"));
             } else {
                 return null;
@@ -67,7 +73,8 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '"
             + username
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -87,7 +94,8 @@ public class DBMgr {
             + password + "' "
             + "WHERE `userinfo`.`username` = '"
             + username + "';", "update");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             return;
         }
     }
@@ -96,7 +104,8 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '" 
             + username 
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -116,7 +125,8 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '"
             + username
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -136,7 +146,8 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '"
             + username
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -156,7 +167,8 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '"
             + username
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -176,7 +188,8 @@ public class DBMgr {
             + "FROM userinfo WHERE username = '"
             + username
             + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -196,7 +209,8 @@ public class DBMgr {
             + balance + "' "
             + "WHERE `userinfo`.`username` = '"
             + username + "';", "update");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             return;
         }
     }
@@ -220,7 +234,8 @@ public class DBMgr {
                 + "FROM information_schema.tables "
                 + "WHERE table_schema='java' "
                 + "AND table_name='transaction_list';", "query");
-            while(db.getStatus()) {
+            while(!db.getStatus()) {
+                System.out.printf("");
                 rs = db.getResultset();
             }
             rs.next();
@@ -231,7 +246,8 @@ public class DBMgr {
                 + transaction.getAmount() + ", "
                 + transaction.getStatus() + ");");
             db = new DBConnection(sql, "update");
-            while(db.getStatus()) {
+            while(!db.getStatus()) {
+                System.out.printf("");
                 return;
             }
             sql = ("INSERT INTO `transaction_detail` "
@@ -243,7 +259,8 @@ public class DBMgr {
                 + transaction.getPayerID() + "', "
                 + "1);");
             db = new DBConnection(sql, "update");
-            while(db.getStatus()) {
+            while(!db.getStatus()) {
+                System.out.printf("");
                 return;
             }
         } catch(Exception e) {
@@ -254,7 +271,8 @@ public class DBMgr {
     public int[] getUserTransactionHistory(String username) {
         db = new DBConnection("SELECT count(*) FROM transaction_detail "
             + "WHERE username = '" + username + "';", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
@@ -264,7 +282,8 @@ public class DBMgr {
                 + "FROM transaction_detail "
                 + "WHERE username = '" + username + "' "
                 + "ORDER BY transaction_id ASC", "query");
-            while(db.getStatus()) {
+            while(!db.getStatus()) {
+                System.out.printf("");
                 rs = db.getResultset();
             }
             int i = 0;
@@ -289,7 +308,8 @@ public class DBMgr {
             + "ON b.status = c.id "
             + "WHERE a.transaction_id = " + transactionID + " "
             + "ORDER BY `a`.`role` ASC", "query");
-        while(db.getStatus()) {
+        while(!db.getStatus()) {
+            System.out.printf("");
             rs = db.getResultset();
         }
         try {
