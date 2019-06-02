@@ -1,4 +1,6 @@
-public class User{
+import javax.swing.JOptionPane;
+
+public class User {
     private DBMgr dbMgr = new DBMgr();
     private String username = null;
 
@@ -58,6 +60,16 @@ public class User{
 
     public int confirmAmount(String payeeID, int amount) {
         // use socket to confirm.
-        return 1; // 1 success, 2 reject, 3 timeout
+        int result = JOptionPane.showConfirmDialog(null,
+            "Is the amount right?",
+            "Confirm",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            return 1;
+        } else {
+            return 2;
+        }
+        // 1 success, 2 reject, 3 timeout
     }
 }
